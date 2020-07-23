@@ -6,7 +6,6 @@ import { ChainInfo } from './types';
 
 import { getSystemChainColor, getSystemIcon } from '@polkadot/apps-config/ui';
 import { getSpecTypes } from '@polkadot/types-known';
-import { registry } from '@polkadot/react-api';
 import { useApi } from '@polkadot/react-hooks';
 import { isNumber } from '@polkadot/util';
 
@@ -27,7 +26,22 @@ export default function useChainInfo (): ChainInfo | null {
       ss58Format: isNumber(api.registry.chainSS58) ? api.registry.chainSS58 : 42,
       tokenDecimals: isNumber(api.registry.chainDecimals) ? api.registry.chainDecimals : 12,
       tokenSymbol: api.registry.chainToken || 'Unit',
-      types: getSpecTypes(registry, systemChain, api.runtimeVersion.specName, api.runtimeVersion.specVersion) as unknown as Record<string, string>
+      types: Object.assign(
+        api.registry.knownTypes.types || {},
+        {
+          FixedI128: 'i128',
+          Permill: 'u32',
+          Position: 'u32',
+          Rate: 'i128',
+          Spread: 'u128'
+        },
+        getSpecTypes(
+          api.registry,
+          systemChain,
+          api.runtimeVersion.specName,
+          api.runtimeVersion.specVersion
+        ) as unknown
+      ) as Record<string, string>
     });
   }, [api, isApiReady, systemChain, systemName]);
 

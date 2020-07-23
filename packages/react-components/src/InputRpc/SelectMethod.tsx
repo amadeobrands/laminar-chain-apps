@@ -7,7 +7,7 @@ import { DropdownOptions } from '../util/types';
 
 import React from 'react';
 
-import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
+import { allJSONRpc as jsonrpc } from '@laminar/types';
 
 import Dropdown from '../Dropdown';
 import { classes } from '../util';
